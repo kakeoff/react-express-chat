@@ -7,8 +7,8 @@ import { useState } from 'react'
 const socket = io.connect('http://localhost:4000')
 const Chat = () => {
   const { search } = useLocation()
-
   const [params, setParams] = useState(null)
+  const [state, setState] = useState([])
 
   useEffect(() => {
     const searchParams = Object.fromEntries(new URLSearchParams(search))
@@ -20,11 +20,11 @@ const Chat = () => {
 
   useEffect(() => {
     socket.on('message', ({ data }) => {
-      console.log(data)
+      setState((_state) => ([_state, data]))
     })
   }, [])
 
-  console.log(params)
+  console.log(state)
   return <div>Chat</div>
 }
 

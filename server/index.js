@@ -1,43 +1,54 @@
-const express = require('express')
-const http = require('http')
-const { Server } = require('socket.io')
-const cors = require('cors')
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+const cors = require("cors");
 
-const app = express()
+const app = express();
 
-const route = require('./route')
+const route = require("./route");
+const { addUser } = require("./users");
 
-app.use(cors({ origin: '*' }))
-app.use(route)
+app.use(cors({ origin: "*" }));
+app.use(route);
 
-const server = http.createServer(app)
+const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST'],
+    origin: "*",
+    methods: ["GET", "POST"],
   },
-})
+});
 
-io.on('connection', (socket) => {
-  socket.on('join', ({ name, room }) => {
-    socket.join(room)
+io.on("connection", (socket) => {
+  socket.on("join", ({ name, room }) => {
+    socket.join(room);
 
-    socket.emit('message', {
+    const { user } = addUser({ name, room });
+
+    socket.emit("message", {
       data: {
         user: {
-          name: 'admin',
-          message: `Hey, ${name}`,
+          name: "admin",
+          message: `Hey, ${user.name}`,
         },
       },
-    })
-  })
+    });
+    socket.broadcast.to(user.room).emit("message", {
+      data: {
+        user: {
+          name: "admin",
+          message: `User ${user.name} has joined`,
+        },
+      },
+    });
+  });
 
-  io.on('disconnect', () => {
-    console.log('Disconnect')
-  })
-})
+  io.on("disconnect", () => {
+    console.log("Disconnect");
+  });
+});
 
 server.listen(4000, () => {
-  console.log('Server is running')
-})
+  console.log("Server is running");
+});
