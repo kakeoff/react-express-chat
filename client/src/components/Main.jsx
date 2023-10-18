@@ -1,25 +1,24 @@
-import React from 'react'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 const FIELDS = {
-  NAME: 'name',
-  ROOM: 'room',
-}
+  NAME: "name",
+  ROOM: "room",
+};
 const Main = () => {
-  const { NAME, ROOM } = FIELDS
-  const [values, setValues] = useState({ [NAME]: '', [ROOM]: '' })
+  const { NAME, ROOM } = FIELDS;
+  const [values, setValues] = useState({ [NAME]: "", [ROOM]: "" });
 
   const handleChange = ({ target: { value, name } }) => {
-    setValues({ ...values, [name]: value })
-  }
+    setValues({ ...values, [name]: value });
+  };
 
   const handleClick = (e) => {
-    const isDisabled = Object.values(values).some((value) => !value)
+    const isDisabled = Object.values(values).some((value) => !value);
 
-    if (isDisabled) e.preventDefault()
-  }
+    if (isDisabled) e.preventDefault();
+  };
 
-  console.log(values)
   return (
     <div className="flex w-full h-full justify-center items-center">
       <form>
@@ -94,7 +93,7 @@ const Main = () => {
         </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default Main
+export default Main;
