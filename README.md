@@ -29,20 +29,16 @@ npm install
 
 ```
 npm run start
-
 ```
 
 ## Server setup
 
 ```
-
 npm install
-
 ```
 
 ```
 npm run dev
-
 ```
 
 ## Contributing
