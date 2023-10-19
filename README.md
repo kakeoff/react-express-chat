@@ -9,9 +9,13 @@
 
 ## Features
 
+### Client
+
 - ReactJS
 - React-router-dom
 - ESLint
+
+### Server
 
 - ExpressJS
 - Socket.io
@@ -19,26 +23,26 @@
 
 ## Client setup
 
-Install dependencies:
-
 ```
 npm install
 ```
 
+```
 npm run start
 
 ```
 
 ## Server setup
 
-Install dependencies:
-
 ```
 
 npm install
 
 ```
+
+```
 npm run dev
+
 ```
 
 ## Contributing
