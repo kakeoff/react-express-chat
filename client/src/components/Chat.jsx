@@ -63,9 +63,20 @@ const Chat = () => {
             <div>{users} users in this room</div>
             <button
               onClick={leftRoom}
-              className="bg-red-500/60 rounded-[16px] h-[30px] px-[10px] hover:scale-[1.03] hover:bg-red-500/80 transition duration-200"
+              className="bg-red-500/60 rounded-[16px] h-[30px] w-[30px] flex items-center justify-center hover:scale-[1.03] hover:bg-red-500/80 transition duration-200"
             >
-              LEFT THE ROOM
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M6 17L6 6L17 6V8L9.41421 8L18.4142 17L17 18.4142L8 9.41421L8 17L6 17Z"
+                  fill="currentColor"
+                />
+              </svg>
             </button>
           </div>
 
