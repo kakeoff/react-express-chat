@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import io from "socket.io-client";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import EmojiPicker from "emoji-picker-react";
 import Messages from "./Messages";
@@ -9,10 +9,12 @@ import Messages from "./Messages";
 const socket = io.connect("http://localhost:4000");
 const Chat = () => {
   const { search } = useLocation();
+  const navigate = useNavigate();
   const [params, setParams] = useState({ room: "", user: "" });
   const [state, setState] = useState([]);
   const [message, setMessage] = useState("");
   const [isEmojiOpen, setEmojiOpen] = useState(false);
+  const [users, setUsers] = useState(0);
 
   useEffect(() => {
     const searchParams = Object.fromEntries(new URLSearchParams(search));
@@ -28,7 +30,26 @@ const Chat = () => {
     });
   }, []);
 
-  const handleSubmit = () => {};
+  useEffect(() => {
+    socket.on("room", ({ data: { users } }) => {
+      setUsers(users.length);
+    });
+  }, []);
+
+  const handleSubmit = (e) => {
+    if (!message) return;
+    socket.emit("sendMessage", { message, params });
+    setMessage("");
+  };
+  const leftRoom = () => {
+    socket.emit("leftRoom", { params });
+    navigate("/");
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSubmit();
+    }
+  };
   const handleChange = ({ target: { value } }) => setMessage(value);
   const onEmojiClick = ({ emoji }) => {
     setMessage(`${message} ${emoji}`);
@@ -39,15 +60,16 @@ const Chat = () => {
         <div className="bg-black/60 h-full w-full flex flex-col rounded-[16px] text-white">
           <div className="w-full h-[50px] bg-black/40 flex flex-row justify-between items-center p-[20px] rounded-t-[16px]">
             <div>ROOM ID: {params.room}</div>
-            <div>0 users in this room</div>
-            <Link to="/">
-              <button className="bg-red-500/60 rounded-[16px] h-[30px] px-[10px] hover:scale-[1.03] hover:bg-red-500/80 transition duration-200">
-                LEFT THE ROOM
-              </button>
-            </Link>
+            <div>{users} users in this room</div>
+            <button
+              onClick={leftRoom}
+              className="bg-red-500/60 rounded-[16px] h-[30px] px-[10px] hover:scale-[1.03] hover:bg-red-500/80 transition duration-200"
+            >
+              LEFT THE ROOM
+            </button>
           </div>
 
-          <div className="w-full h-full overflow-hidden">
+          <div className="w-full h-full overflow-x-hidden overflow-y-auto">
             <Messages messages={state} name={params.name} />
           </div>
 
@@ -57,6 +79,7 @@ const Chat = () => {
               name="message"
               value={message}
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
               className="bg-transparent focus:outline-none h-full p-[20px] w-full"
               type="text"
               autoComplete="off"
@@ -70,7 +93,9 @@ const Chat = () => {
             </button>
 
             <div className="absolute right-[100px] bottom-[90px]">
-              {isEmojiOpen && <EmojiPicker onEmojiClick={onEmojiClick} />}
+              {isEmojiOpen && (
+                <EmojiPicker theme="dark" onEmojiClick={onEmojiClick} />
+              )}
             </div>
 
             <button
