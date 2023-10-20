@@ -1,8 +1,9 @@
 let users = [];
 
 const findUser = (user) => {
-  const userName = user.name.trim().toLowerCase();
-  const userRoom = user.room.trim().toLowerCase();
+  const { name, room } = user;
+  const userName = name.trim().toLowerCase();
+  const userRoom = room.trim().toLowerCase();
 
   return users.find(
     (u) =>
@@ -24,9 +25,7 @@ const addUser = (user) => {
   };
 };
 
-const getRoomUsers = (room) => {
-  return users.filter((user) => user.room === room);
-};
+const getRoomUsers = (room) => users.filter((user) => user.room === room);
 
 const removeUser = (user) => {
   const foundUser = findUser(user);
