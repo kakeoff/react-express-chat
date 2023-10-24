@@ -6,10 +6,26 @@ import { Socket, io } from "socket.io-client";
 
 const socket: Socket = io("http://localhost:4001");
 
+interface User {
+  name: string;
+  room: string;
+}
+interface MessageData {
+  data: {
+    message: string;
+    user: User;
+  };
+}
+interface RoomData {
+  data: {
+    users: User[];
+  };
+}
+
 const Chat: React.FC = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
-  const [params, setParams] = useState<{ room: string; name: string }>({
+  const [params, setParams] = useState<User>({
     room: "",
     name: "",
   });
@@ -39,13 +55,15 @@ const Chat: React.FC = () => {
   }, [search]);
 
   useEffect(() => {
-    socket.on("message", ({ data }) => {
+    socket.on("message", ({ data }: MessageData) => {
+      console.log(data);
       setState((_state) => [..._state, data]);
     });
   }, []);
 
   useEffect(() => {
-    socket.on("room", ({ data: { users } }) => {
+    socket.on("room", ({ data: { users } }: RoomData) => {
+      console.log(users);
       setUsers(users.length);
     });
   }, []);
