@@ -55,7 +55,6 @@ const Chat: React.FC = () => {
     socket.emit("sendMessage", { message, params });
     setMessage("");
 
-    // Ожидаем завершения отправки сообщения перед прокруткой
     setTimeout(() => {
       if (messagesContainerRef.current) {
         messagesContainerRef.current?.scrollTo({
