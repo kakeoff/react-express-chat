@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import Messages from "./Messages";
@@ -17,6 +17,8 @@ const Chat: React.FC = () => {
   const [message, setMessage] = useState("");
   const [isEmojiOpen, setEmojiOpen] = useState(false);
   const [users, setUsers] = useState(0);
+
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const searchParams = Object.fromEntries(new URLSearchParams(search));
@@ -52,6 +54,16 @@ const Chat: React.FC = () => {
     if (!message) return;
     socket.emit("sendMessage", { message, params });
     setMessage("");
+
+    // Ожидаем завершения отправки сообщения перед прокруткой
+    setTimeout(() => {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current?.scrollTo({
+          top: messagesContainerRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }, 10);
   };
 
   const leftRoom = () => {
@@ -98,7 +110,10 @@ const Chat: React.FC = () => {
             </button>
           </div>
 
-          <div className="w-full h-full overflow-x-hidden overflow-y-auto">
+          <div
+            className="w-full h-full overflow-x-hidden overflow-y-auto"
+            ref={messagesContainerRef}
+          >
             <Messages messages={state} name={params.name} />
           </div>
 
