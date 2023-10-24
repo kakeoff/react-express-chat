@@ -72,9 +72,9 @@ const handleUserLeftRoom = (socket: Socket, { params }: { params: { name: string
 };
 
 io.on("connection", (socket: Socket) => {
-  socket.on("join", (data) => handleUserJoin(socket, data));
-  socket.on("sendMessage", (data) => handleSendMessage(socket, data));
-  socket.on("leftRoom", (data) => handleUserLeftRoom(socket, data));
+  socket.on("join", (data: { name: string; room: string  }) => handleUserJoin(socket, data));
+  socket.on("sendMessage", (data: { message: string, params: { name: string; room: string } }) => handleSendMessage(socket, data));
+  socket.on("leftRoom", (data: { params: { name: string; room: string } }) => handleUserLeftRoom(socket, data));
 
   socket.on("disconnect", () => {
     console.log("Disconnect");
